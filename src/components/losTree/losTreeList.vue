@@ -39,71 +39,70 @@
 </template>
 
 <script lang="ts">
-import * as util from "../../utils/util.js";
-import i18n from "../../utils/I18n.js";
+import { Vue, Component, Prop } from "vue-property-decorator";
+import util from "../../utils/util"
+import i18n from "../../utils/I18n";
 import losCard from "./losCard.vue";
-export default {
-    name: "losTreeList",
-    components: { losCard },
-    props: {
-        link: String,
+@Component({
+    components: {
+        losCard,
     },
-    data() {
-        return {
-            err: null,
-            msg: "no data",
-            itemList: [],
-            addNewBtnStr: "+ Add new",
-            deleteBtnStr: "delete",
-            styleObj: "border-style: dashed;",
-        };
-    },
+})
+export default class LosTreeList extends Vue {
+    @Prop(String) link: string | undefined;
+
+    err = null;
+    msg = "no data";
+    itemList: any = [];
+    addNewBtnStr = "+ Add new";
+    deleteBtnStr = "delete";
+    styleObj = "border-style: dashed;";
+
     created() {
         this.getData();
         this.setString();
-    },
-    methods: {
-        addNew: function () {
-            console.log("click add new");
-            const newItemId = util.uuidv4();
-            const createdAt = new Date();
-            const newitem = {
-                id: newItemId,
-                name: "Untitled",
-                time: {
-                    createAt: createdAt.toLocaleString(),
-                },
-            };
-            this.itemList.push(newitem);
-            util.setLocalStorage("losListItems", this.itemList);
-            util.setLocalStorage(newItemId, [{ id: 1, name: "Untitled" }]);
-            // open new node
-            this.$router.push("/lostree/" + newItemId);
-        },
-        deleteItem(id, index) {
-            console.log("delete item", this, id, index);
-            this.itemList.splice(index, 1);
-            util.setLocalStorage("losListItems", this.itemList);
-            localStorage.removeItem(id);
-        },
-        getData() {
-            const localTmp = util.getLocalStorage("losListItems");
-            console.log("index", localTmp, i18n.message.login);
-            if (localTmp == null) {
-                console.log("no local data \ncheck for cloud data");
-                // axios
-                //if no cloud data
-            } else {
-                this.itemList = localTmp;
-                // set local data then check cloud data
-            }
-        },
-        setString() {
-            this.addNewBtnStr = i18n.message.addNewItem;
-            this.deleteBtnStr = i18n.message.deleteBtn;
-        },
-    },
-};
+    }
+
+    addNew() {
+        console.log("click add new");
+        const newItemId = util.uuidv4();
+        const createdAt = new Date();
+        const newitem = {
+            id: newItemId,
+            name: "Untitled",
+            time: {
+                createAt: createdAt.toLocaleString(),
+            },
+        };
+        this.itemList.push(newitem);
+        util.setLocalStorage("losListItems", this.itemList);
+        util.setLocalStorage(newItemId, [{ id: 1, name: "Untitled" }]);
+        // open new node
+        this.$router.push("/lostree/" + newItemId);
+    }
+    deleteItem(id: number, index: number) {
+        console.log("delete item", this, id, index);
+        this.itemList.splice(index, 1);
+        util.setLocalStorage("losListItems", this.itemList);
+        localStorage.removeItem(id.toString());
+    }
+    getData() {
+        const localTmp = util.getLocalStorage("losListItems");
+        console.log("index", localTmp, i18n.message.login);
+        if (localTmp == null) {
+            console.log("no local data \ncheck for cloud data");
+            // axios
+            //if no cloud data
+        } else {
+            this.itemList = localTmp;
+            // set local data then check cloud data
+        }
+    }
+    setString() {
+        this.addNewBtnStr = i18n.message.addNewItem;
+        this.deleteBtnStr = i18n.message.deleteBtn;
+    }
+}
 </script>
 
 <style scoped>

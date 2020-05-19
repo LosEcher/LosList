@@ -23,28 +23,32 @@
 </template>
 
 <script lang="ts">
-export default {
-    name: "losCard",
-    props: {
-        itemTitle: String,
-        itemContent: String,
-        itemBtn: String,
-        styleObject: String,
-        btnShowType: String,
-    },
-    data() {
-        return {
-            title: "title",
-            content: "content",
-            btn: "btn",
-            showType: 0, //0 - always ;1 - hover;
-            btnShown: true,
-        };
-    },
+import { Vue, Component, Prop } from "vue-property-decorator";
+@Component
+export default class LosCard extends Vue {
+    @Prop(String) itemTitle: string | undefined;
+    @Prop(String) itemContent: string | undefined;
+    @Prop(String) itemBtn: string | undefined;
+    @Prop(String) styleObject: string | undefined;
+    @Prop(String) btnShowType: string | undefined;
+
+    title = "title";
+    content = "content";
+    btn = "btn";
+    showType = 0; //0 - always ;1 - hover;
+    btnShown = true;
+    // data() {
+    //     return {
+    //         title: "title",
+    //         content: "content",
+    //         btn: "btn",
+    //         showType: 0, //0 - always ;1 - hover;
+    //         btnShown: true,
+    //     };
+    // }
     created() {
-        if (this.itemTitle) {
-            this.title = this.itemTitle;
-        }
+        this.title = this.itemTitle || "title";
+
         if (this.itemContent) {
             this.content = this.itemContent;
         }
@@ -61,24 +65,24 @@ export default {
                     break;
             }
         }
-    },
-    methods: {
-        btnClick() {
-            console.log("card click");
-            this.$emit("hit-click", this);
-        },
-        startHover() {
-            if (this.showType) {
-                this.btnShown = true;
-            }
-        },
-        endHover() {
-            if (this.showType) {
-                this.btnShown = false;
-            }
-        },
-    },
-};
+    }
+
+    btnClick() {
+        console.log("card click");
+        this.$emit("hit-click", this);
+    }
+
+    startHover() {
+        if (this.showType) {
+            this.btnShown = true;
+        }
+    }
+    endHover() {
+        if (this.showType) {
+            this.btnShown = false;
+        }
+    }
+}
 </script>
 
 <style scoped>
